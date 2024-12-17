@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Viewer and Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        /* Introduction Section Styling */
+        .introduction {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .introduction img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #4CAF50;
+            margin-bottom: 20px;
+        }
+        .introduction h2 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        .introduction p {
+            color: #555;
+            font-size: 18px;
+        }
+        /* Document Viewing */
+        .document-container {
+            margin-bottom: 40px;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+        }
+        /* Secret Code Section */
+        .secret-code-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .secret-code-section input {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .secret-code-section button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .secret-code-section button:disabled {
+            background-color: #ccc;
+        }
+        /* Loading Circle and Messages */
+        .loading-circle {
+            display: none;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .thank-you-message {
+            display: none;
+            text-align: center;
+            color: #4CAF50;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .error-message {
+            display: none;
+            text-align: center;
+            color: #ff0000;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .download-button {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        .download-button a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Introduction Section with Picture -->
+    <div class="introduction">
+        <img src="a.png" alt="Msangi Jr">
+        <h2>Welcome to Msangi Jr's Document Portal</h2>
+        <p>Hello! I am Msangi Jr, and I provide various statistical services, data science insights, and artificial intelligence solutions. Here, you can view and download documents that I have uploaded for you. Please verify the code before downloading the files. Thank you for visiting!</p>
+    </div>
+
+    <h1>Document Viewer</h1>
+
+    <div class="document-container">
+        <p><strong>Document Title:</strong>PARAGOMIASIS PROJECT</p>
+        <p>This document is available for viewing directly in your browser.</p>
+        
+        <iframe src="https://raw.githubusercontent.com/yourusername/customerportal/main/paragomiasis.pdf" title="Document Viewer"></iframe>
+    </div>
+
+    <!-- Secret Code Input Section -->
+    <div class="secret-code-section">
+        <input type="text" id="secretCode" placeholder="Enter Secret Code">
+        <button onclick="verifyCode()">Verify Code</button>
+    </div>
+
+    <!-- Loading Circle for Verification Process -->
+    <div class="loading-circle" id="loadingCircle"></div>
+
+    <!-- Thank You Message with Checkmark -->
+    <div class="thank-you-message" id="thankYouMessage">
+        <span class="checkmark">✔️</span>Thank you! Your code was verified successfully.
+    </div>
+
+    <!-- Error Message for Invalid Code -->
+    <div class="error-message" id="errorMessage">
+        <strong>Error!</strong> The secret code you entered is incorrect. Please try again.
+    </div>
+
+    <!-- Button to download the document -->
+    <div class="download-button">
+        <!-- Updated to point to raw URL of the PDF on GitHub -->
+        <a href="https://raw.githubusercontent.com/yourusername/customerportal/main/paragomiasis.pdf" download>Download Document</a>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>&copy; 2025 Msangi Jr. All rights reserved.</p>
+    </div>
+
+</div>
+
+<script>
+    const correctCode = 'secret123'; // Secret code for verification
+
+    // Function to verify the secret code
+    function verifyCode() {
+        const enteredCode = document.getElementById('secretCode').value.trim();
+
+        // Display the loading circle while processing
+        document.getElementById('loadingCircle').style.display = 'block';
+        document.querySelector('.secret-code-section button').disabled = true; // Disable the button during verification
+        document.getElementById('errorMessage').style.display = 'none'; // Hide the error message
+
+        // Simulate verification process with a delay (e.g., 3 seconds)
+        setTimeout(() => {
+            if (enteredCode === correctCode) {
+                // Hide loading circle and show success message
+                document.getElementById('loadingCircle').style.display = 'none';
+                document.getElementById('thankYouMessage').style.display = 'block';
+                document.querySelector('.download-button').style.display = 'block';
+            } else {
+                // Hide loading circle and display error message
+                document.getElementById('loadingCircle').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+            // Re-enable the button
+            document.querySelector('.secret-code-section button').disabled = false;
+        }, 3000); // 3 seconds delay for simulating processing time
+    }
+
+    // Auto-focus on the secret code input field when the page loads
+    window.onload = () => {
+        document.getElementById('secretCode').focus();
+    };
+</script>
+
+</body>
+</html>
