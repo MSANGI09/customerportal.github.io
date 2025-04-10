@@ -3,220 +3,393 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Viewer and Downloader</title>
+    <title>Professional Document Portal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --light-color: #f3f4f6;
+            --dark-color: #1f2937;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
         }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
+        
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
+            border-radius: 0 0 1rem 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        h1, h2 {
-            text-align: center;
-            color: #333;
+        
+        .profile-section {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
         }
-        /* Introduction Section Styling */
-        .introduction {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 40px;
+        
+        .profile-image {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            object-fit: cover;
         }
-        .introduction img {
+        
+        .profile-section:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
             width: 150px;
             height: 150px;
-            border-radius: 50%;
-            border: 3px solid #4CAF50;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0));
+            border-radius: 0 0 0 100%;
+            z-index: 0;
         }
-        .introduction h2 {
-            color: #4CAF50;
-            margin-bottom: 10px;
-        }
-        .introduction p {
-            color: #555;
-            font-size: 18px;
-        }
-        /* Document Viewing */
+        
         .document-container {
-            margin-bottom: 40px;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
         }
-        iframe {
+        
+        .document-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .doc-frame {
             width: 100%;
-            height: 600px;
+            height: 500px;
             border: none;
-            border-radius: 8px;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
-        /* Secret Code Section */
-        .secret-code-section {
-            text-align: center;
-            margin-bottom: 20px;
+        
+        .verification-section {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
         }
-        .secret-code-section input {
-            padding: 10px;
-            font-size: 16px;
-            width: 200px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
         }
-        .secret-code-section button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
-        .secret-code-section button:disabled {
-            background-color: #ccc;
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
         }
-        /* Loading Circle and Messages */
-        .loading-circle {
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        /* Custom notification styles */
+        .custom-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 300px;
+            background-color: white;
+            color: var(--dark-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            z-index: 1050;
             display: none;
-            width: 30px;
-            height: 30px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4CAF50;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+            animation: slideIn 0.3s ease forwards;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        
+        .toast-success {
+            border-left: 4px solid var(--success-color);
         }
-        .thank-you-message {
+        
+        .toast-error {
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .download-section {
             display: none;
             text-align: center;
-            color: #4CAF50;
-            font-size: 18px;
-            margin-top: 20px;
+            padding: 2rem;
+            margin-top: 1rem;
+            background-color: #f0f9ff;
+            border-radius: 1rem;
+            border: 1px dashed var(--primary-color);
         }
-        .error-message {
-            display: none;
-            text-align: center;
-            color: #ff0000;
-            font-size: 18px;
-            margin-top: 20px;
-        }
-        .download-button {
-            text-align: center;
-            margin-top: 20px;
-            display: none;
-        }
-        .download-button a {
-            text-decoration: none;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+        
         .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #777;
+            background-color: var(--dark-color);
+            color: #e5e7eb;
+            padding: 2rem 0;
+            border-radius: 1rem 1rem 0 0;
+            margin-top: 3rem;
+        }
+        
+        .loader-spinner {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: text-bottom;
+            border: 0.25rem solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border 0.75s linear infinite;
+        }
+        
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
+<header class="header-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">Document Portal</h1>
+        <p class="lead">Access and download professional documents securely</p>
+    </div>
+</header>
+
 <div class="container">
+    <!-- Profile Section -->
+    <section class="profile-section mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center">
+                <img src="/api/placeholder/150/150" alt="Msangi Jr" class="profile-image mb-3">
+            </div>
+            <div class="col-md-9">
+                <h2 class="fw-bold mb-3">Welcome to Msangi Jr's Professional Portal</h2>
+                <p class="lead">I specialize in statistical services, data science insights, and artificial intelligence solutions. This secure portal allows you to view and download documents shared specifically with you.</p>
+                <div class="d-flex mt-3">
+                    <span class="badge bg-primary me-2 p-2"><i class="fas fa-chart-bar me-1"></i> Data Analysis</span>
+                    <span class="badge bg-info me-2 p-2"><i class="fas fa-robot me-1"></i> AI Solutions</span>
+                    <span class="badge bg-secondary p-2"><i class="fas fa-database me-1"></i> Statistical Services</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Introduction Section with Picture -->
-    <div class="introduction">
-        <img src="a.png" alt="Msangi Jr">
-        <h2>Welcome to Msangi Jr's Document Portal</h2>
-        <p>Hello! I am Msangi Jr, and I provide various statistical services, data science insights, and artificial intelligence solutions. Here, you can view and download documents that I have uploaded for you. Please verify the code before downloading the files. Thank you for visiting!</p>
+    <!-- Document Viewer Section -->
+    <section class="document-container mb-4">
+        <h3 class="document-title">PARAGOMIASIS PROJECT</h3>
+        <p class="mb-3"><i class="fas fa-file-pdf text-danger me-2"></i> View the document directly in your browser below.</p>
+        
+        <div class="ratio ratio-16x9 mb-3">
+            <iframe class="doc-frame" src="https://docs.google.com/viewer?embedded=true&url=https://raw.githubusercontent.com/MSANGI09/customerportal.github.io/1b0a11500b45583ef22eae6771dfbabafaf252bf/paragomiasis.pdf">
+                This browser does not support PDFs. Please download the PDF to view it.
+            </iframe>
+        </div>
+        
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> To download this document, please verify your access code below.
+        </div>
+    </section>
+
+    <!-- Verification Section -->
+    <section class="verification-section">
+        <h4 class="mb-3"><i class="fas fa-key me-2"></i> Access Verification</h4>
+        <p>Enter your unique access code to download the document</p>
+        
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="text" id="secretCode" class="form-control" placeholder="Enter Access Code" aria-label="Access Code">
+                </div>
+                <div class="form-text">Your access code was provided to you separately</div>
+            </div>
+            <div class="col-md-6">
+                <button id="verifyButton" class="btn btn-primary" onclick="verifyCode()">
+                    <span id="buttonText">Verify Access</span>
+                    <span id="buttonSpinner" class="loader-spinner ms-2 d-none"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section (Hidden initially) -->
+    <section id="downloadSection" class="download-section">
+        <div class="text-center">
+            <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
+            <h4>Your access has been verified!</h4>
+            <p class="mb-4">Thank you for verifying your identity. You can now download the document.</p>
+            <a href="https://msangi09.github.io/customerportal.github.io/" download class="btn btn-success btn-lg">
+                <i class="fas fa-download me-2"></i> Download Document
+            </a>
+        </div>
+    </section>
+
+    <!-- Custom Toast Notifications -->
+    <div id="successToast" class="custom-toast toast-success">
+        <div class="d-flex">
+            <div class="me-3">
+                <i class="fas fa-check-circle text-success fa-2x"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Success!</h5>
+                <p class="mb-0">Your access code was verified successfully.</p>
+            </div>
+            <button type="button" class="btn-close ms-auto" onclick="closeToast('successToast')"></button>
+        </div>
     </div>
-
-    <h1>Document Viewer</h1>
-
-    <div class="document-container">
-        <p><strong>Document Title:</strong> PARAGOMIASIS PROJECT</p>
-        <p>This document is available for viewing directly in your browser.</p>
-
-        <iframe src="https://docs.google.com/viewer?embedded=true&url=https://raw.githubusercontent.com/MSANGI09/customerportal.github.io/1b0a11500b45583ef22eae6771dfbabafaf252bf/paragomiasis.pdf" width="100%" height="600px">
-            This browser does not support PDFs. Please download the PDF to view it: 
-            <a href="https://raw.githubusercontent.com/MSANGI09/customerportal.github.io/1b0a11500b45583ef22eae6771dfbabafaf252bf/paragomiasis.pdf">Download PDF</a>
-        </iframe>
-
+    
+    <div id="errorToast" class="custom-toast toast-error">
+        <div class="d-flex">
+            <div class="me-3">
+                <i class="fas fa-exclamation-circle text-danger fa-2x"></i>
+            </div>
+            <div>
+                <h5 class="mb-1">Error!</h5>
+                <p class="mb-0">The access code you entered is invalid. Please try again.</p>
+            </div>
+            <button type="button" class="btn-close ms-auto" onclick="closeToast('errorToast')"></button>
+        </div>
     </div>
-
-    <!-- Secret Code Input Section -->
-    <div class="secret-code-section">
-        <input type="text" id="secretCode" placeholder="Enter Secret Code"> <br><br>
-        <button onclick="verifyCode()">Verify Code</button>
-    </div>
-
-    <!-- Loading Circle for Verification Process -->
-    <div class="loading-circle" id="loadingCircle"></div>
-
-    <!-- Thank You Message with Checkmark -->
-    <div class="thank-you-message" id="thankYouMessage">
-        <span class="checkmark">✔️</span>Thank you! Your code was verified successfully.
-    </div>
-
-    <!-- Error Message for Invalid Code -->
-    <div class="error-message" id="errorMessage">
-        <strong>Error!</strong> The secret code you entered is incorrect. Please try again.
-    </div>
-
-    <!-- Button to download the document -->
-    <div class="download-button">
-        <a href="https://msangi09.github.io/customerportal.github.io/" download>Download Document</a>
-    </div>
-
-    <!-- Footer Section -->
-    <div class="footer">
-        <p>&copy; 2025 Msangi Jr. All rights reserved.</p>
-    </div>
-
 </div>
 
-<script>
-    const correctCode = 'secret123'; // Secret code for verification
+<!-- Footer -->
+<footer class="footer mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Msangi Jr</h5>
+                <p>Providing professional data science and AI solutions</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p>&copy; 2025 Msangi Jr. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
 
-    // Function to verify the secret code
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Correct access code
+    const correctCode = 'secret123';
+    
+    // Function to verify the access code
     function verifyCode() {
         const enteredCode = document.getElementById('secretCode').value.trim();
-
-        // Display the loading circle while processing
-        document.getElementById('loadingCircle').style.display = 'block';
-        document.querySelector('.secret-code-section button').disabled = true; // Disable the button during verification
-        document.getElementById('errorMessage').style.display = 'none'; // Hide the error message
-
-        // Simulate verification process with a delay (e.g., 3 seconds)
+        const verifyButton = document.getElementById('verifyButton');
+        const buttonText = document.getElementById('buttonText');
+        const buttonSpinner = document.getElementById('buttonSpinner');
+        
+        // Show loading state
+        buttonText.textContent = 'Verifying...';
+        buttonSpinner.classList.remove('d-none');
+        verifyButton.disabled = true;
+        
+        // Hide any existing toasts
+        document.getElementById('successToast').style.display = 'none';
+        document.getElementById('errorToast').style.display = 'none';
+        
+        // Simulate verification process (3 seconds)
         setTimeout(() => {
             if (enteredCode === correctCode) {
-                // Hide loading circle and show success message
-                document.getElementById('loadingCircle').style.display = 'none';
-                document.getElementById('thankYouMessage').style.display = 'block';
-                document.querySelector('.download-button').style.display = 'block';
+                // Show success notification
+                showToast('successToast');
+                
+                // Show download section with animation
+                const downloadSection = document.getElementById('downloadSection');
+                downloadSection.style.display = 'block';
+                downloadSection.scrollIntoView({ behavior: 'smooth' });
             } else {
-                // Hide loading circle and display error message
-                document.getElementById('loadingCircle').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'block';
+                // Show error notification
+                showToast('errorToast');
             }
-            // Re-enable the button
-            document.querySelector('.secret-code-section button').disabled = false;
-        }, 3000); // 3 seconds delay for simulating processing time
+            
+            // Reset button state
+            buttonText.textContent = 'Verify Access';
+            buttonSpinner.classList.add('d-none');
+            verifyButton.disabled = false;
+        }, 2000);
     }
-
-    // Auto-focus on the secret code input field when the page loads
+    
+    // Function to show toast notification
+    function showToast(toastId) {
+        const toast = document.getElementById(toastId);
+        toast.style.display = 'block';
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.style.animation = 'slideIn 0.3s ease forwards';
+            }, 300);
+        }, 5000);
+    }
+    
+    // Function to close toast notification
+    function closeToast(toastId) {
+        const toast = document.getElementById(toastId);
+        toast.style.animation = 'slideOut 0.3s ease forwards';
+        setTimeout(() => {
+            toast.style.display = 'none';
+            toast.style.animation = 'slideIn 0.3s ease forwards';
+        }, 300);
+    }
+    
+    // Focus on the access code input when the page loads
     window.onload = () => {
         document.getElementById('secretCode').focus();
     };
 </script>
-
 </body>
 </html>
-
