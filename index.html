@@ -80,12 +80,64 @@
             margin-bottom: 1.5rem;
         }
         
+        /* Document viewer styles to hide Google Docs controls */
+        .doc-frame-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
         .doc-frame {
             width: 100%;
             height: 500px;
             border: none;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: -40px; /* Hide the Google Docs toolbar */
+            height: calc(100% + 40px); /* Compensate for the negative margin */
+        }
+        
+        /* This creates a protective layer to block toolbar interactions */
+        .doc-frame-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px; /* Cover Google toolbar area */
+            background-color: rgba(255, 255, 255, 0.01); /* Nearly transparent */
+            z-index: 10;
+            pointer-events: auto; /* Block clicks on toolbar */
+        }
+        
+        /* Add side overlays to block sidebar controls */
+        .doc-frame-side-overlay-left {
+            position: absolute;
+            top: 70px; /* Start below the top overlay */
+            left: 0;
+            width: 40px;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.01);
+            z-index: 10;
+            pointer-events: auto;
+        }
+        
+        .doc-frame-side-overlay-right {
+            position: absolute;
+            top: 70px; /* Start below the top overlay */
+            right: 0;
+            width: 40px;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.01);
+            z-index: 10;
+            pointer-events: auto;
+        }
+        
+        /* Disable right-click on iframe */
+        .no-right-click {
+            pointer-events: none;
+        }
+        
+        .iframe-container {
+            pointer-events: auto;
         }
         
         .verification-section {
@@ -224,15 +276,23 @@
         </div>
     </section>
 
-    <!-- Document Viewer Section -->
+    <!-- Document Viewer Section with Protected Iframe -->
     <section class="document-container mb-4">
         <h3 class="document-title">DATA ANALYSIS</h3>
         <p class="mb-3"><i class="fas fa-file-pdf text-danger me-2"></i> View the document directly in your browser below.</p>
         
-        <div class="ratio ratio-16x9 mb-3">
-            <iframe class="doc-frame" src="https://docs.google.com/viewer?embedded=true&url=https://raw.githubusercontent.com/MSANGI09/customerportal.github.io/main/data_analysis.pdf">
-                This browser does not support PDFs. Please download the PDF to view it.
-            </iframe>
+        <div class="doc-frame-container mb-3">
+            <!-- Protective overlays to block Google Docs controls -->
+            <div class="doc-frame-overlay"></div>
+            <div class="doc-frame-side-overlay-left"></div>
+            <div class="doc-frame-side-overlay-right"></div>
+            
+            <!-- The actual iframe with view-only document -->
+            <div class="ratio ratio-16x9 iframe-container no-right-click">
+                <iframe class="doc-frame" src="https://docs.google.com/viewer?embedded=true&url=https://raw.githubusercontent.com/MSANGI09/customerportal.github.io/main/data_analysis.pdf">
+                    This browser does not support PDFs. Please download the PDF to view it.
+                </iframe>
+            </div>
         </div>
         
         <div class="alert alert-info">
@@ -373,8 +433,6 @@
         // Log successful download attempt
         console.log('Document download initiated');
         
-        // You can add analytics code here if needed
-        
         // Show a brief notification that download has started
         const downloadToast = document.createElement('div');
         downloadToast.className = 'custom-toast toast-success';
@@ -425,6 +483,33 @@
             toast.style.animation = 'slideIn 0.3s ease forwards';
         }, 300);
     }
+    
+    // Disable right-click on document view
+    document.addEventListener('DOMContentLoaded', function() {
+        const iframeContainer = document.querySelector('.iframe-container');
+        iframeContainer.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Enable scrolling within the iframe while keeping controls blocked
+        const iframe = document.querySelector('.doc-frame');
+        iframe.addEventListener('load', function() {
+            // Allow scrolling in the main content area
+            document.querySelector('.iframe-container').classList.remove('no-right-click');
+            
+            // Apply additional protections if needed
+            try {
+                iframe.contentWindow.document.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    return false;
+                });
+            } catch (e) {
+                // Cross-origin restrictions may prevent this
+                console.log('Could not apply additional protections due to cross-origin policy');
+            }
+        });
+    });
     
     // Focus on the access code input when the page loads
     window.onload = () => {
