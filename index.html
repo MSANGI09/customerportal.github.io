@@ -230,7 +230,7 @@
         <p class="mb-3"><i class="fas fa-file-pdf text-danger me-2"></i> View the document directly in your browser below.</p>
         
         <div class="ratio ratio-16x9 mb-3">
-            <iframe class="doc-frame" src="https://docs.google.com/viewer?embedded=true&url=https://raw.githubusercontent.com/MSANGI09/customerportal.github.io/1b0a11500b45583ef22eae6771dfbabafaf252bf/paragomiasis.pdf">
+            <iframe class="doc-frame" src="https://docs.google.com/viewer?embedded=true&url=https://raw.githubusercontent.com/MSANGI09/customerportal.github.io/main/data_analysis.pdf">
                 This browser does not support PDFs. Please download the PDF to view it.
             </iframe>
         </div>
@@ -268,8 +268,8 @@
             <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
             <h4>Your access has been verified!</h4>
             <p class="mb-4">Thank you for verifying your identity. You can now download the document.</p>
-            <a href="https://msangi09.github.io/customerportal.github.io/" download class="btn btn-success btn-lg">
-                <i class="fas fa-download me-2"></i> Download Document
+            <a id="downloadBtn" href="https://raw.githubusercontent.com/MSANGI09/customerportal.github.io/main/paragomiasis.pdf" class="btn btn-success btn-lg" download="Paragomiasis_Project.pdf">
+                <i class="fas fa-download me-2"></i> Download PDF Document
             </a>
         </div>
     </section>
@@ -339,7 +339,7 @@
         document.getElementById('successToast').style.display = 'none';
         document.getElementById('errorToast').style.display = 'none';
         
-        // Simulate verification process (3 seconds)
+        // Simulate verification process (2 seconds)
         setTimeout(() => {
             if (enteredCode === correctCode) {
                 // Show success notification
@@ -349,6 +349,13 @@
                 const downloadSection = document.getElementById('downloadSection');
                 downloadSection.style.display = 'block';
                 downloadSection.scrollIntoView({ behavior: 'smooth' });
+                
+                // Add event listener for download button
+                document.getElementById('downloadBtn').addEventListener('click', function(e) {
+                    // Trigger PDF download
+                    triggerPdfDownload();
+                });
+                
             } else {
                 // Show error notification
                 showToast('errorToast');
@@ -359,6 +366,39 @@
             buttonSpinner.classList.add('d-none');
             verifyButton.disabled = false;
         }, 2000);
+    }
+    
+    // Function to trigger PDF download
+    function triggerPdfDownload() {
+        // Log successful download attempt
+        console.log('Document download initiated');
+        
+        // You can add analytics code here if needed
+        
+        // Show a brief notification that download has started
+        const downloadToast = document.createElement('div');
+        downloadToast.className = 'custom-toast toast-success';
+        downloadToast.style.display = 'block';
+        downloadToast.innerHTML = `
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-download text-primary fa-2x"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1">Download Started</h5>
+                    <p class="mb-0">Your PDF is being downloaded.</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(downloadToast);
+        
+        // Remove notification after 3 seconds
+        setTimeout(() => {
+            downloadToast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => {
+                document.body.removeChild(downloadToast);
+            }, 300);
+        }, 3000);
     }
     
     // Function to show toast notification
