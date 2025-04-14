@@ -247,32 +247,16 @@
             to { transform: rotate(360deg); }
         }
 
-/* Add these CSS rules to your existing stylesheet */
-
 /* Prevent text selection */
 .doc-frame-container {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    position: relative; /* Ensure positioned elements work correctly */
 }
 
-/* Make iframe content unselectable if possible */
-.doc-frame {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: auto; /* This blocks all interactions with the iframe content */
-}
-
-/* Allow scrolling while preventing selection */
-.iframe-container {
-    pointer-events: auto; /* Re-enable pointer events on the container */
-    overflow: auto;
-}
-
-/* Create a transparent overlay that sits on top of the document */
+/* Protection overlay that allows scrolling */
 .doc-protection-overlay {
     position: absolute;
     top: 0;
@@ -281,7 +265,21 @@
     height: 100%;
     background: transparent;
     z-index: 20;
-    cursor: default;
+    pointer-events: none; /* Allow clicks to pass through to the iframe */
+}
+
+/* Make iframe content unselectable but scrollable */
+.iframe-container {
+    overflow: auto;
+    pointer-events: auto; /* Enable interactions with the container */
+}
+
+.doc-frame {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: auto; /* Enable scrolling */
 }
 
 
@@ -321,10 +319,8 @@
         <h3 class="document-title">DATA ANALYSIS</h3>
         <p class="mb-3"><i class="fas fa-file-pdf text-danger me-2"></i> View the document directly in your browser below.</p>
         
-         <div class="doc-frame-container mb-3">
-    <!-- Full document protection overlay -->
-    <div class="doc-protection-overlay"></div>
-    
+
+        <div class="doc-frame-container mb-3">
     <!-- Protective overlays to block Google Docs controls -->
     <div class="doc-frame-overlay"></div>
     <div class="doc-frame-side-overlay-left"></div>
@@ -336,6 +332,9 @@
             This browser does not support PDFs. Please download the PDF to view it.
         </iframe>
     </div>
+    
+    <!-- Transparent overlay that allows scrolling but prevents selection -->
+    <div class="doc-protection-overlay"></div>
 </div>
 
 
